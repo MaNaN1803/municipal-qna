@@ -8,6 +8,7 @@ import Signup from './routes/Signup'; // Sign-up page component
 import SubmitQuestion from './routes/SubmitQuestion'; // Submit question page
 import QuestionList from './routes/QuestionList';
 import Profile from './routes/Profile';
+
 const App = () => {
   return (
     <Router>

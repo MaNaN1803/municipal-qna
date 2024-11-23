@@ -24,7 +24,7 @@ router.post('/report', authMiddleware, async (req, res) => {
 });
 
 // Get All Reports (Admin)
-router.get('/reports', authMiddleware, roleMiddleware('moderator'), async (req, res) => {
+router.get('/reports', authMiddleware, roleMiddleware('admin'), async (req, res) => {
   try {
     const reports = await Report.find().populate('reportedBy', 'name');
     res.json(reports);

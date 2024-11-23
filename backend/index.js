@@ -10,6 +10,7 @@ const answerRoutes = require('./routes/answerRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 
+
 connectDB();
 
 const app = express();
