@@ -1,57 +1,93 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { apiRequest } from '../utils/api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../utils/api";
 
 const Signup = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userData = { name, email, password };
-
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
     try {
-      const response = await apiRequest('/auth/signup', 'POST', userData);
-      console.log('Sign-up successful:', response);
-      // Redirect to login after successful signup
-      navigate('/login');
-    } catch (err) {
-      setError('Error during sign-up. Please try again.');
-      console.error('Sign-up error:', err);
+      await apiRequest("/auth/signup", "POST", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      navigate("/login");
+    } catch (error) {
+      setError("Signup failed. Please try again.");
     }
   };
 
   return (
-    <div>
-      <h2>Sign Up</h2>
+    <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded shadow">
+      <h2 className="text-2xl font-bold mb-4 text-center">Signup</h2>
       <form onSubmit={handleSubmit}>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <input
           type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
           required
         />
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
           required
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formData.password}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
           required
         />
-        <button type="submit">Sign Up</button>
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
+          required
+        />
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition"
+        >
+          Signup
+        </button>
       </form>
+      <p className="mt-4 text-center text-gray-600">
+        Already have an account?{" "}
+        <a href="/login" className="text-black font-semibold">
+          Login
+        </a>
+      </p>
     </div>
   );
 };

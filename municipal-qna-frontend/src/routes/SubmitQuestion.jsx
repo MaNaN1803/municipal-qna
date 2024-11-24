@@ -1,83 +1,73 @@
-import React, { useState } from 'react';
-import { apiRequest } from '../utils/api.js';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../utils/api";
 
 const SubmitQuestion = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [gpsLocation, setGpsLocation] = useState('');
-  const [attempts, setAttempts] = useState('');
-  const [images, setImages] = useState('');
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "",
+  });
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      title,
-      description,
-      category,
-      gpsLocation,
-      attempts,
-      images: images.split(','),
-    };
-
     try {
-      const token = localStorage.getItem('token'); // Retrieve the token from local storage
-      const response = await apiRequest('/questions', 'POST', formData, token);
-      console.log('Question posted successfully:', response);
-      // Reset form after submission
-      setTitle('');
-      setDescription('');
-      setCategory('');
-      setGpsLocation('');
-      setAttempts('');
-      setImages('');
+      await apiRequest("/questions", "POST", formData);
+      navigate("/home");
     } catch (error) {
-      console.error('Error submitting question:', error);
+      setError("Failed to submit question. Please try again.");
     }
   };
 
   return (
-    <div>
-      <h2>Submit a Question</h2>
+    <div className="max-w-lg mx-auto mt-20 bg-white p-6 rounded shadow">
+      <h2 className="text-2xl font-bold mb-4 text-center">Submit a Question</h2>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          name="title"
+          placeholder="Question Title"
+          value={formData.title}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
           required
         />
         <textarea
+          name="description"
           placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
+          rows="4"
           required
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+        ></textarea>
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="w-full p-3 border rounded mb-4"
           required
-        />
-        <input
-          type="text"
-          placeholder="GPS Location"
-          value={gpsLocation}
-          onChange={(e) => setGpsLocation(e.target.value)}
-        />
-        <textarea
-          placeholder="Attempts"
-          value={attempts}
-          onChange={(e) => setAttempts(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Image URLs (comma-separated)"
-          value={images}
-          onChange={(e) => setImages(e.target.value)}
-        />
-        <button type="submit">Submit Question</button>
+        >
+          <option value="" disabled>
+            Select Category
+          </option>
+          <option value="Waste Management">Waste Management</option>
+          <option value="Road Maintenance">Road Maintenance</option>
+          <option value="Public Safety">Public Safety</option>
+        </select>
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );

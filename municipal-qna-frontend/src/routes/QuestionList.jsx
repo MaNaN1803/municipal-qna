@@ -1,61 +1,58 @@
-// src/routes/QuestionList.jsx
-import React, { useState, useEffect } from 'react';
-import { apiRequest } from '../utils/api'; // Utility function to make API requests
+import React, { useState, useEffect } from "react";
+import { apiRequest } from "../utils/api";
 
 const QuestionList = () => {
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(null);
 
-  // Fetch the list of questions when the component mounts
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const token = localStorage.getItem('token'); // Retrieve token from localStorage
-        const response = await apiRequest('/questions', 'GET', null, token); // Fetch the questions
-        setQuestions(response); // Set the fetched questions to the state
+        const token = localStorage.getItem("token");
+        const response = await apiRequest("/questions", "GET", null, token);
+        setQuestions(response);
       } catch (err) {
-        setError('Failed to load questions. Please try again later.');
-        console.error('Error fetching questions:', err);
+        setError("Failed to load questions. Please try again later.");
       }
     };
 
     fetchQuestions();
-  }, []); // The empty dependency array ensures the effect runs only once when the component mounts
+  }, []);
 
   return (
-    <div>
-      <h2>Questions</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Show error message if any */}
-      <ul>
+    <div className="max-w-5xl mx-auto mt-10 p-4">
+      <h1 className="text-4xl font-bold text-center mb-6 text-black">
+        All Questions
+      </h1>
+      {error && (
+        <div className="text-center">
+          <p className="text-red-500 text-lg">{error}</p>
+        </div>
+      )}
+      <div className="space-y-6">
         {questions.length > 0 ? (
           questions.map((question) => (
-            <li key={question._id}>
-              <h3>{question.title}</h3>
-              <p>{question.description}</p>
-              <p><strong>Category:</strong> {question.category}</p>
-              <p><strong>Status:</strong> {question.status}</p>
-              <p><strong>GPS Location:</strong> {question.gpsLocation}</p>
-              <p><strong>Attempts:</strong> {question.attempts}</p>
-              <div>
-                <strong>Images:</strong>
-                {question.images && question.images.length > 0 ? (
-                  <ul>
-                    {question.images.map((image, index) => (
-                      <li key={index}>
-                        <img src={image} alt={`Question Image ${index}`} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No images available.</p>
-                )}
+            <div
+              key={question._id}
+              className="p-6 bg-white shadow-md rounded-md hover:shadow-lg transition duration-300"
+            >
+              <h2 className="text-2xl font-semibold text-black mb-2">
+                {question.title}
+              </h2>
+              <p className="text-gray-600 mb-4">{question.description}</p>
+              <div className="text-right">
+                <button className="text-black font-semibold underline hover:text-gray-700">
+                  View Details
+                </button>
               </div>
-            </li>
+            </div>
           ))
         ) : (
-          <p>No questions available.</p>
+          <p className="text-gray-500 text-center text-lg">
+            No questions available. Be the first to ask one!
+          </p>
         )}
-      </ul>
+      </div>
     </div>
   );
 };

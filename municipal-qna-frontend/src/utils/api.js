@@ -1,20 +1,25 @@
+// src/utils/api.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api'; // Backend API URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'; // Use Vite's environment variable
 
-// Utility function to make API requests
-export const apiRequest = async (url, method = 'GET', data = null, token = null) => {
+export const apiRequest = async (url, method = 'GET', body = null, token = '') => {
+  const headers = {
+    'Content-Type': body instanceof FormData ? 'multipart/form-data' : 'application/json',
+    Authorization: token ? `Bearer ${token}` : '',
+  };
+
   try {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const response = await axios({
-      url: `${API_URL}${url}`,
       method,
-      data,
+      url: `${API_URL}${url}`,
+      data: body,
       headers,
     });
+
     return response.data;
   } catch (error) {
-    console.error('Error with API request:', error);
-    throw error;
+    console.error('API Request Error:', error.response ? error.response.data : error.message);
+    throw new Error(error.response?.data?.message || 'Something went wrong');
   }
 };

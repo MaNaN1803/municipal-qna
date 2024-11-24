@@ -1,46 +1,68 @@
-// src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PrivateRoute from './routes/PrivateRoute'; // Import the PrivateRoute component
-import Home from './routes/Home'; // Protected route component
-import Login from './routes/Login'; // Login page component
-import Signup from './routes/Signup'; // Sign-up page component
-import SubmitQuestion from './routes/SubmitQuestion'; // Submit question page
+import PrivateRoute from './routes/PrivateRoute';
+import Home from './routes/Home';
+import Login from './routes/Login';
+import Signup from './routes/Signup';
+import SubmitQuestion from './routes/SubmitQuestion';
 import QuestionList from './routes/QuestionList';
 import Profile from './routes/Profile';
+import Navbar from './components/Navbar';
+import SearchResults from './routes/SearchResults';
 
 const App = () => {
+  const isAuthenticated = !!localStorage.getItem('token');
+
   return (
     <Router>
-      <Routes>
-        {/* Login page accessible to everyone */}
-        <Route path="/login" element={<Login />} />
-
-        {/* Sign-up page accessible to everyone */}
-        <Route path="/signup" element={<Signup />} />
-
-        {/* Home page - protected route, only accessible with authentication */}
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          }
-        />
-
-        {/* Submit question page - protected route, only accessible with authentication */}
-        <Route
-          path="/submit-question"
-          element={
-            <PrivateRoute>
-              <SubmitQuestion />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/questions" element={<QuestionList />} /> 
-        <Route path="/profile" element={<Profile />} /> 
-      </Routes>
+      <div className="min-h-screen bg-gray-100">
+        {/* Render Navbar only if the user is authenticated */}
+        {isAuthenticated && <Navbar />}
+      
+        
+        <div className="container mx-auto py-6 px-4">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/home"
+              element={
+                <PrivateRoute>
+                  <Home />
+                  
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/submit-question"
+              element={
+                <PrivateRoute>
+                  <SubmitQuestion />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/questions" element={ <PrivateRoute><QuestionList /></PrivateRoute>} />
+            <Route path="/search" element={
+              <PrivateRoute><SearchResults /></PrivateRoute>   } />
+            <Route
+              path="/questions"
+              element={
+                <PrivateRoute>
+                  <QuestionList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </div>
     </Router>
   );
 };

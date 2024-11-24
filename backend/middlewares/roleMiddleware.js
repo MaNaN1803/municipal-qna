@@ -1,7 +1,8 @@
-const roleMiddleware = (requiredRole) => (req, res, next) => {
-    if (req.user.role !== requiredRole) return res.status(403).send("Permission denied.");
-    next();
-  };
-  
-  module.exports = roleMiddleware;
-  
+const roleMiddleware = (...requiredRoles) => (req, res, next) => {
+  if (!requiredRoles.includes(req.user.role)) {
+    return res.status(403).json({ message: 'Permission denied.' });
+  }
+  next();
+};
+
+module.exports = roleMiddleware;

@@ -1,16 +1,14 @@
-// src/routes/PrivateRoute.jsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token'); // Check if the token exists
+  const isAuthenticated = localStorage.getItem('token');
 
   if (!isAuthenticated) {
-    // If not authenticated, redirect to signup page
     return <Navigate to="/signup" />;
   }
 
-  return children; // Render the children (protected components)
+  return children;
 };
 
 export default PrivateRoute;
