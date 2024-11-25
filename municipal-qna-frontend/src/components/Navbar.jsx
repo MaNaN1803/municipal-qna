@@ -59,11 +59,12 @@ const Navbar = () => {
                 Questions
               </Link>
               <Link
-                to="/profile"
-                className="text-gray-600 hover:text-black transition"
-              >
-                Profile
-              </Link>
+  to="/profile"
+  className="text-gray-600 hover:text-black transition"
+>
+  Profile
+</Link>
+
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black transition"

@@ -1,39 +1,44 @@
-import React, { useEffect, useState } from "react";
-import { apiRequest } from "../utils/api";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiRequest } from '../utils/api';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchProfile = async () => {
       try {
-        const data = await apiRequest("/auth/me");
-        setUser(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        const response = await apiRequest('/auth/profile', 'GET', null, token);
+        setProfile(response);
+      } catch (err) {
+        setError('Failed to load profile. Please try again.');
       }
     };
 
-    fetchUser();
-  }, []);
+    fetchProfile();
+  }, [navigate]);
+
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">Your Profile</h2>
-      {user ? (
-        <div>
-          <p>
-            <strong>Name:</strong> {user.name}
-          </p>
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-          <p>
-            <strong>Questions Posted:</strong> {user.questionsPosted || 0}
-          </p>
-        </div>
+    <div className="bg-white shadow-md rounded p-6 max-w-lg mx-auto">
+      {profile ? (
+        <>
+          <h1 className="text-2xl font-bold mb-4">Your Profile</h1>
+          <p><strong>Name:</strong> {profile.name}</p>
+          <p><strong>Email:</strong> {profile.email}</p>
+          <p><strong>Role:</strong> {profile.role}</p>
+        </>
       ) : (
-        <p className="text-center text-gray-500">Loading your profile...</p>
+        <p>Loading...</p>
       )}
     </div>
   );

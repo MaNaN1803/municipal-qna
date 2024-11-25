@@ -7,7 +7,7 @@ const router = express.Router();
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Save files in the `uploads` directory
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -19,7 +19,7 @@ const upload = multer({ storage });
 router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   try {
     const { title, description, category, gpsLocation, attempts } = req.body;
-    const imagePath = req.file ? req.file.path : null;
+    const imagePath = req.file ? `uploads/${req.file.filename}` : null;
 
     const question = new Question({
       title,
@@ -39,12 +39,20 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   }
 });
 
-// GET /api/questions - Get All Questions
+
+// GET /api/questions - Get All Questions with optional filters
 router.get('/', async (req, res) => {
+  const { category, search } = req.query;
+  const filter = {};
+
+  if (category) filter.category = category;
+  if (search) filter.$text = { $search: search };
+
   try {
-    const questions = await Question.find().populate('user', 'name');
+    const questions = await Question.find(filter).populate('user', 'name');
     res.json(questions);
   } catch (err) {
+    console.error('Error fetching questions:', err);
     res.status(500).send('Server error');
   }
 });
