@@ -6,11 +6,9 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,7 +19,9 @@ a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
+  transition: color 0.3s ease;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -29,16 +29,25 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-size: 1rem;
+  background-color: #f4f4f4; /* Lighter background */
+  color: #333;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
+/* Button Styles */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -47,26 +56,63 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
+  background-color: #535bf2;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light Mode */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
+    border-color: #ddd;
+    color: #333;
+  }
+
+  body {
+    background-color: #f9f9f9;
+    color: #333;
+  }
+
+  h1 {
+    color: #213547;
+  }
+}
+
+/* Responsive Styles for Layout */
+@media (max-width: 768px) {
+  body {
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    font-size: 2.4em;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  .question-card {
+    padding: 1rem;
   }
 }
