@@ -16,16 +16,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // POST /api/questions - Create a Question
-router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+// POST /api/questions - Create a Question
+router.post('/', authMiddleware, upload.array('images', 10), async (req, res) => {
   try {
     const { title, description, category, gpsLocation, attempts } = req.body;
-    const imagePath = req.file ? `uploads/${req.file.filename}` : null;
+
+    // Extract paths of uploaded images
+    const imagePaths = req.files.map((file) => `uploads/${file.filename}`);
 
     const question = new Question({
       title,
       description,
       category,
-      images: imagePath ? [imagePath] : [],
+      images: imagePaths, // Store all image paths
       gpsLocation,
       attempts,
       user: req.user.id,
@@ -38,6 +41,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
 
 
 // GET /api/questions - Get All Questions with optional filters
