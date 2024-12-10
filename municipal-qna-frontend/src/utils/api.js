@@ -1,7 +1,7 @@
 // src/utils/api.js
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'; // Fallback to local if not set
+let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'; // Fallback to local if not set
 
 export const apiRequest = async (url, method = 'GET', body = null, token = '') => {
   const headers = {

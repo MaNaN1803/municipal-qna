@@ -20,6 +20,16 @@ const QuestionList = () => {
     fetchQuestions();
   }, []);
 
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "Unknown";
+    try {
+      return new Date(dateString).toLocaleString(); // Directly parse ISO date string
+    } catch (e) {
+      return "Invalid date";
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto mt-10 p-4">
       <h1 className="text-4xl font-bold text-center mb-6 text-black">
@@ -33,13 +43,13 @@ const QuestionList = () => {
       <div className="space-y-6">
         {questions.length > 0 ? (
           questions.map((question) => {
-            const imageSrc = question.images[0]?.startsWith("http")
+            const imageSrc = question.images?.[0]?.startsWith("http")
               ? question.images[0]
               : `http://localhost:5000/${question.images[0]}`;
 
             // Convert creation and update timestamps to readable format
-            const createdAt = new Date(question.createdAt.$numberLong).toLocaleString();
-            const updatedAt = new Date(question.updatedAt.$numberLong).toLocaleString();
+            const createdAt = formatDate(question.createdAt);
+            const updatedAt = formatDate(question.updatedAt);
             const gpsLocation = question.gpsLocation || "Not provided";
 
             return (
@@ -71,7 +81,7 @@ const QuestionList = () => {
                   <strong>Last Updated:</strong> {updatedAt}
                 </p>
                 <p className="text-gray-500 text-xs">
-                  <strong>Answers Count:</strong> {question.answersCount.$numberInt}
+                  <strong>Answers Count:</strong> {question.answersCount || "0"}
                 </p>
                 <div className="text-right">
                   <Link
