@@ -144,7 +144,7 @@ const SubmitQuestion = () => {
 
         {/* Map for selecting GPS Location */}
         <div className="mb-4">
-          <h3 className="text-lg font-bold mb-2">Select GPS Location</h3>
+          <h3 className="text-lg font-bold mb-2">Select Your Location where the issue has occured</h3>
           <MapContainer
             center={[28.6139, 77.2090]} // Default to Delhi
             zoom={13}
@@ -161,7 +161,7 @@ const SubmitQuestion = () => {
             onClick={handleNearMe}
             className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
           >
-            Near Me
+            Use my current location
           </button>
         </div>
 

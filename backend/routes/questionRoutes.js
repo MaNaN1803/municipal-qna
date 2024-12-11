@@ -87,4 +87,38 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
   }
 });
 
+// GET /api/questions/user - Get Questions by Logged-in User
+router.get('/user', authMiddleware, async (req, res) => {
+  try {
+    console.log('Logged-in User ID:', req.user.id); // Debugging log
+    const questions = await Question.find({ user: req.user.id });
+    res.json(questions);
+  } catch (err) {
+    console.error('Error fetching user questions:', err); // Log the full error
+    res.status(500).json({ message: 'Failed to fetch user questions', error: err.message });
+  }
+});
+
+// GET /api/questions - Get Questions with optional filters
+router.get('/', async (req, res) => {
+  try {
+    const { userId, category, search } = req.query;
+    const filter = {};
+
+    if (userId) filter.user = userId;
+    if (category) filter.category = category;
+    if (search) filter.$text = { $search: search };
+
+    const questions = await Question.find(filter)
+      .populate('user', 'name')
+      .sort({ createdAt: -1 });
+    res.json(questions);
+  } catch (err) {
+    console.error('Error fetching questions:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
 module.exports = router;

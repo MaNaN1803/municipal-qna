@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiRequest } from '../utils/api';
+import ProfileHeader from '../components/ProfileHeader';
+import ActivityTabs from '../components/ActivityTabs';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [userQuestions, setUserQuestions] = useState([]);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [activeTab, setActiveTab] = useState('questions');
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -16,30 +22,76 @@ const Profile = () => {
           return;
         }
 
-        const response = await apiRequest('/auth/profile', 'GET', null, token);
-        setProfile(response);
+        // Fetch user profile
+        const profileData = await apiRequest('/auth/profile', 'GET', null, token);
+        setProfile(profileData);
+
+        // Fetch user's questions
+        const questionsData = await apiRequest('/questions', 'GET', null, token, {
+          params: { userId: profileData._id }
+        });
+        setUserQuestions(questionsData);
+
+        // Fetch user's answers
+        const answersData = await apiRequest('/answers', 'GET', null, token, {
+          params: { userId: profileData._id }
+        });
+        setUserAnswers(answersData || []);
+
+        setLoading(false);
       } catch (err) {
-        setError('Failed to load profile. Please try again.');
+        console.error('Profile fetch error:', err);
+        setError('Failed to load profile data. Please try again.');
+        setLoading(false);
       }
     };
 
-    fetchProfile();
+    fetchProfileData();
   }, [navigate]);
 
-  if (error) return <p className="text-red-500">{error}</p>;
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-8">
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
+
+  const stats = {
+    questions: userQuestions.length,
+    answers: userAnswers.length
+  };
 
   return (
-    <div className="bg-white shadow-md rounded p-6 max-w-lg mx-auto">
-      {profile ? (
-        <>
-          <h1 className="text-2xl font-bold mb-4">Your Profile</h1>
-          <p><strong>Name:</strong> {profile.name}</p>
-          <p><strong>Email:</strong> {profile.email}</p>
-          <p><strong>Role:</strong> {profile.role}</p>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <ProfileHeader 
+        profile={profile} 
+        stats={stats} 
+        formatDate={formatDate} 
+      />
+      <ActivityTabs 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        userQuestions={userQuestions}
+        userAnswers={userAnswers}
+        formatDate={formatDate}
+      />
     </div>
   );
 };

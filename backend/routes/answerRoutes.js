@@ -52,4 +52,32 @@ router.put('/:id/vote', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/user', authMiddleware, async (req, res) => {
+  try {
+    const answers = await Answer.find({ user: req.user.id }).populate('question', 'title');
+    res.json(answers);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET /api/answers - Get Answers with optional user filter
+router.get('/', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const filter = userId ? { user: userId } : {};
+    
+    const answers = await Answer.find(filter)
+      .populate('question', 'title')
+      .populate('user', 'name')
+      .sort({ createdAt: -1 });
+    res.json(answers);
+  } catch (err) {
+    console.error('Error fetching answers:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
 module.exports = router;
