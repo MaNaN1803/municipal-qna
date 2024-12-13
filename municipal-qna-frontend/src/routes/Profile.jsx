@@ -21,23 +21,23 @@ const Profile = () => {
           navigate('/login');
           return;
         }
-
+  
         // Fetch user profile
         const profileData = await apiRequest('/auth/profile', 'GET', null, token);
         setProfile(profileData);
-
-        // Fetch user's questions
+  
+        // Fetch user's questions (filter by user ID)
         const questionsData = await apiRequest('/questions', 'GET', null, token, {
-          params: { userId: profileData._id }
+          params: { userId: profileData._id } // Pass the user's ID as a query parameter
         });
         setUserQuestions(questionsData);
-
+  
         // Fetch user's answers
         const answersData = await apiRequest('/answers', 'GET', null, token, {
           params: { userId: profileData._id }
         });
         setUserAnswers(answersData || []);
-
+  
         setLoading(false);
       } catch (err) {
         console.error('Profile fetch error:', err);
@@ -45,10 +45,11 @@ const Profile = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProfileData();
   }, [navigate]);
 
+  
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',

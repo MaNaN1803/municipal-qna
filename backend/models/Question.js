@@ -14,7 +14,7 @@ const QuestionSchema = new mongoose.Schema(
       default: 'open',
       enum: ['open', 'under review', 'resolved'],
     },
-    answersCount: { type: Number, default: 0 }, // Track number of answers
+    answersCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

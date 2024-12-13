@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiRequest } from '../utils/api';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents,useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -40,6 +40,7 @@ const SubmitQuestion = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         setSelectedPosition([latitude, longitude]);
+        setMapCenter([latitude, longitude]); // Update map center
         setFormData({ ...formData, gpsLocation: `${latitude},${longitude}` });
       },
       (err) => {
@@ -47,6 +48,7 @@ const SubmitQuestion = () => {
       }
     );
   };
+  
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -77,6 +79,18 @@ const SubmitQuestion = () => {
       <Marker position={selectedPosition} icon={customMarkerIcon} />
     ) : null;
   };
+
+  // Component to update map center
+const UpdateMapCenter = () => {
+  const map = useMap();
+  if (mapCenter) {
+    map.setView(mapCenter, 15); // Set view to the new center with a zoom level of 13
+  }
+  return null;
+};
+
+const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Default to Delhi
+
 
   return (
     <div className="max-w-lg mx-auto mt-20 bg-white p-6 rounded shadow">
@@ -154,7 +168,8 @@ const SubmitQuestion = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <MapClickHandler />
+           <UpdateMapCenter />
+           <MapClickHandler />
           </MapContainer>
           <button
             type="button"

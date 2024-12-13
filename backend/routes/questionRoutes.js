@@ -43,24 +43,6 @@ router.post('/', authMiddleware, upload.array('images', 10), async (req, res) =>
 });
 
 
-
-// GET /api/questions - Get All Questions with optional filters
-router.get('/', async (req, res) => {
-  const { category, search } = req.query;
-  const filter = {};
-
-  if (category) filter.category = category;
-  if (search) filter.$text = { $search: search };
-
-  try {
-    const questions = await Question.find(filter).populate('user', 'name');
-    res.json(questions);
-  } catch (err) {
-    console.error('Error fetching questions:', err);
-    res.status(500).send('Server error');
-  }
-});
-
 // GET /api/questions/:id - Get Question by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -118,6 +100,8 @@ router.get('/', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+
 
 
 

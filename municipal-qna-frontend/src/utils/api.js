@@ -20,7 +20,9 @@ export const apiRequest = async (url, method = 'GET', body = null, token = '', c
     return response.data;
   } catch (error) {
     console.error('API Request Error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'An unexpected error occurred');
+    const errorMessage = error.response?.data?.message || error.message;
+    const errorCode = error.response?.status || 500;
+    throw new Error(`API Error ${errorCode}: ${errorMessage}`);
   }
 };
 

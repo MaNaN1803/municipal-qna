@@ -11,15 +11,18 @@ const QuestionList = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await apiRequest("/questions", "GET", null, token);
-        setQuestions(response);
+        const sortedQuestions = response.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setQuestions(sortedQuestions);
       } catch (err) {
         setError("Failed to load questions. Please try again later.");
       }
     };
-
+  
     fetchQuestions();
   }, []);
-
+  
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return "Unknown";

@@ -13,11 +13,12 @@ const searchRoutes = require('./routes/searchRoutes');
 
 connectDB();
 
+const Question = require('./models/Question');
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static files from the 'uploads' folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes

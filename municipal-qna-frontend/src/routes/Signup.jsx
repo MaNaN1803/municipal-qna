@@ -35,59 +35,62 @@ const Signup = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">Signup</h2>
-      <form onSubmit={handleSubmit}>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition"
-        >
-          Signup
-        </button>
-      </form>
-      <p className="mt-4 text-center text-gray-600">
-        Already have an account?{" "}
-        <a href="/login" className="text-black font-semibold">
-          Login
-        </a>
-      </p>
+    <div className="flex justify-center items-center h-screen bg-gradient-to-r from-gray-200 via-gray-200 to-gray-600">
+      <div className="w-full sm:w-96 bg-white p-8 rounded-lg shadow-xl">
+        <h2 className="text-4xl font-semibold text-center text-gray-800 mb-8">Sign Up</h2>
+        <form onSubmit={handleSubmit}>
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full p-4 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 transition-all duration-300"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full p-4 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 transition-all duration-300"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full p-4 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 transition-all duration-300"
+            required
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 transition-all duration-300"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-300"
+          >
+            Sign Up
+          </button>
+        </form>
+        <p className="mt-6 text-center text-gray-600">
+          Already have an account?{" "}
+          <a href="/login" className="text-gray-800 font-semibold hover:underline">
+            Login
+          </a>
+        </p>
+      </div>
     </div>
   );
 };

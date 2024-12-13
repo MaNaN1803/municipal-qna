@@ -10,6 +10,8 @@ import Profile from './routes/Profile';
 import Navbar from './components/Navbar';
 import SearchResults from './routes/SearchResults';
 import AnswerQuestion from './routes/AnswerQuestion';
+import UnansweredQuestions from './routes/UnansweredQuestions'; // Newly added route
+
 const App = () => {
   const isAuthenticated = !!localStorage.getItem('token');
 
@@ -26,7 +28,6 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <Home />
-                  
                 </PrivateRoute>
               }
             />
@@ -38,9 +39,6 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-            <Route path="/questions" element={ <PrivateRoute><QuestionList /></PrivateRoute>} />
-            <Route path="/search" element={
-              <PrivateRoute><SearchResults /></PrivateRoute>   } />
             <Route
               path="/questions"
               element={
@@ -50,22 +48,37 @@ const App = () => {
               }
             />
             <Route
-  path="/profile"
-  element={
-    <PrivateRoute>
-      <Profile />
-    </PrivateRoute>
-  }
-/>
-<Route
-  path="/questions/:id"
-  element={
-    <PrivateRoute>
-      <AnswerQuestion />
-    </PrivateRoute>
-  }
-/>
-<Route path="/answer/:id" element={<AnswerQuestion />} />
+              path="/search"
+              element={
+                <PrivateRoute>
+                  <SearchResults />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/questions/unanswered"
+              element={
+                <PrivateRoute>
+                  <UnansweredQuestions />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/questions/:id"
+              element={
+                <PrivateRoute>
+                  <AnswerQuestion />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </div>
       </div>
