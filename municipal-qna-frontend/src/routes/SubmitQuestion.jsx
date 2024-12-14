@@ -104,7 +104,7 @@ const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Default to De
           placeholder="Question Title"
           value={formData.title}
           onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
+          className="w-full p-3 border border-black rounded mb-4"
           required
         />
 
@@ -114,7 +114,7 @@ const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Default to De
           placeholder="Description"
           value={formData.description}
           onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
+          className="w-full p-3 border border-black rounded mb-4"
           rows="4"
           required
         ></textarea>
@@ -124,7 +124,7 @@ const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Default to De
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
+          className="w-full p-3 border border-black rounded mb-4"
           required
         >
           <option value="" disabled>
@@ -152,7 +152,7 @@ const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Default to De
           placeholder="Previous attempts to resolve the issue"
           value={formData.attempts}
           onChange={handleChange}
-          className="w-full p-3 border rounded mb-4"
+          className="w-full p-3 border border-black  rounded mb-4"
           rows="3"
         ></textarea>
 

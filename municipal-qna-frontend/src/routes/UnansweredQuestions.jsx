@@ -16,7 +16,7 @@ const UnansweredQuestions = () => {
         setQuestions(data);
       } catch (error) {
         console.error("Error fetching questions:", error);
-        setError(error.message || 'Failed to fetch questions');
+        setError(error.message || "Failed to fetch questions");
       } finally {
         setLoading(false);
       }
@@ -25,82 +25,166 @@ const UnansweredQuestions = () => {
     fetchQuestions();
   }, []);
 
-  const unansweredQuestions = questions.filter((question) => question.answersCount === 0);
+  const unansweredQuestions = questions.filter(
+    (question) => question.answersCount === 0
+  );
 
   const getImageSrc = (images) => {
     if (!images?.length) {
       return "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
     }
-    
+
     const imagePath = images[0];
-    return imagePath.startsWith("http") 
-      ? imagePath 
-      : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${imagePath}`;
+    return imagePath.startsWith("http")
+      ? imagePath
+      : `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/${imagePath}`;
+  };
+
+  const formatDate = (dateField) => {
+    if (!dateField) return "Unknown";
+    try {
+      return new Date(dateField).toLocaleString();
+    } catch (e) {
+      return "Invalid date";
+    }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {error ? (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
-            <p className="text-gray-700">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Try Again
-            </button>
+    <div className="container mx-auto px-4 py-4">
+      {/* Hero Section */}
+      <div className="bg-blue-500 text-white p-6 rounded-lg text-center mb-8">
+        <h1 className="text-4xl font-bold mb-2">Unanswered Questions</h1>
+        <p className="text-lg">
+          Explore questions waiting for your insights!
+        </p>
+      </div>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-1/4 pr-4">
+          <div className="bg-white p-4 shadow rounded-lg mb-6">
+            <h2 className="text-lg font-semibold mb-4">Categories</h2>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/category/general" className="text-blue-500 hover:underline">
+                  General
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/waste-management" className="text-blue-500 hover:underline">
+                  Waste Management
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/road-maintenance" className="text-blue-500 hover:underline">
+                  Road Maintenance
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/public-safety" className="text-blue-500 hover:underline">
+                  Public Safety
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/environmental" className="text-blue-500 hover:underline">
+                  Environmental
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/healthcare" className="text-blue-500 hover:underline">
+                  Healthcare
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/education" className="text-blue-500 hover:underline">
+                  Education
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/transportation" className="text-blue-500 hover:underline">
+                  Transportation
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
-      ) : loading ? (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <p className="text-center text-gray-500">Loading unanswered questions...</p>
-        </div>
-      ) : (
-        <>
-          <header className="bg-blue-600 text-white py-8 px-4">
-            <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
-              <h1 className="text-4xl font-bold text-center md:text-left mb-4 md:mb-0">
-                Unanswered Questions
-              </h1>
-              <p className="text-center md:text-left text-lg">
-                Explore questions waiting for your insights!
-              </p>
-            </div>
-          </header>
 
-          <main className="container mx-auto px-4 py-6">
-            {unansweredQuestions.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {unansweredQuestions.map((question) => (
-                  <div key={question._id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 overflow-hidden">
-                    <Link to={`/questions/${question._id}`}>
-                      <div className="p-4">
-                        <h2 className="text-lg font-bold mb-2">{question.title}</h2>
-                        <p className="text-sm text-gray-600">{question.description}</p>
-                        <div className="text-xs text-gray-500 mt-2">
-                          <span>
-                            <strong>Category:</strong> {question.category}
-                          </span>{" "}
-                          |{" "}
-                          <span>
-                            <strong>Created:</strong> {new Date(question.createdAt).toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
+        {/* Question Feed */}
+        <div className="w-3/4">
+          <h2 className="text-2xl font-semibold mb-4">Unanswered Questions</h2>
+          {error ? (
+            <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+              <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+              <p className="text-gray-700">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : loading ? (
+            <p className="text-center text-gray-500">Loading unanswered questions...</p>
+          ) : unansweredQuestions.length > 0 ? (
+            <div className="space-y-4">
+              {unansweredQuestions.map((question) => (
+                <div
+                  key={question._id}
+                  className="bg-white p-4 shadow rounded-lg flex items-start"
+                >
+                  <img
+                    src={getImageSrc(question.images)}
+                    alt="Thumbnail"
+                    className="w-16 h-16 rounded-full mr-4"
+                  />
+                  <div className="flex-grow">
+                    <Link
+                      to={`/questions/${question._id}`}
+                      className="text-lg font-semibold text-blue-500 hover:underline"
+                    >
+                      {question.title}
                     </Link>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {question.description.slice(0, 100)}...
+                    </p>
+                    <div className="text-xs text-gray-500 mt-2">
+                      <span>
+                        <strong>Category:</strong> {question.category || "General"}
+                      </span>{" "}
+                      |{" "}
+                      <span>
+                        <strong>Created:</strong> {formatDate(question.createdAt)}
+                      </span>
+                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-center mt-6">
-                No unanswered questions available.
-              </p>
-            )}
-          </main>
-        </>
-      )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center mt-6">
+              No unanswered questions available.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="mt-8 bg-gray-100 p-4 text-center text-gray-500">
+        <p>&copy; 2024 Q&A Hub. All rights reserved.</p>
+        <p>
+          <Link to="/about" className="text-blue-500 hover:underline">
+            About Us
+          </Link>{" "}
+          |{" "}
+          <Link to="/contact" className="text-blue-500 hover:underline">
+            Contact
+          </Link>{" "}
+          |{" "}
+          <Link to="/privacy" className="text-blue-500 hover:underline">
+            Privacy Policy
+          </Link>
+        </p>
+      </footer>
     </div>
   );
 };

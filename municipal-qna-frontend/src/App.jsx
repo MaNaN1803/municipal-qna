@@ -10,7 +10,9 @@ import Profile from './routes/Profile';
 import Navbar from './components/Navbar';
 import SearchResults from './routes/SearchResults';
 import AnswerQuestion from './routes/AnswerQuestion';
-import UnansweredQuestions from './routes/UnansweredQuestions'; // Newly added route
+import UnansweredQuestions from './routes/UnansweredQuestions';
+import AdminDashboard from './routes/AdminDashboard';
+import ModeratorDashboard from './routes/ModeratorDashboard';
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -76,6 +78,22 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <AnswerQuestion />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute>
+                  <AdminDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/moderator"
+              element={
+                <PrivateRoute>
+                  <ModeratorDashboard />
                 </PrivateRoute>
               }
             />

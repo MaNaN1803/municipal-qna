@@ -4,105 +4,174 @@ import { Link } from "react-router-dom";
 
 const QuestionList = () => {
   const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await apiRequest("/questions", "GET", null, token);
-        const sortedQuestions = response.sort(
+        const data = await apiRequest("/questions");
+        const sortedQuestions = data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setQuestions(sortedQuestions);
-      } catch (err) {
-        setError("Failed to load questions. Please try again later.");
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     fetchQuestions();
   }, []);
-  
-  // Helper function to format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "Unknown";
+
+  const getImageSrc = (images) => {
+    if (images && images[0] && images[0].startsWith("http")) {
+      return images[0];
+    }
+    if (images && images[0]) {
+      return `http://localhost:5000/${images[0]}`;
+    }
+    return "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
+  };
+
+  const formatDate = (dateField) => {
+    if (!dateField) return "Unknown";
     try {
-      return new Date(dateString).toLocaleString(); // Directly parse ISO date string
+      return new Date(dateField).toLocaleString();
     } catch (e) {
       return "Invalid date";
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-4">
-      <h1 className="text-4xl font-bold text-center mb-6 text-black">
-        All Questions
-      </h1>
-      {error && (
-        <div className="text-center">
-          <p className="text-red-500 text-lg">{error}</p>
-        </div>
-      )}
-      <div className="space-y-6">
-        {questions.length > 0 ? (
-          questions.map((question) => {
-            const imageSrc = question.images?.[0]?.startsWith("http")
-              ? question.images[0]
-              : `http://localhost:5000/${question.images[0]}`;
-
-            // Convert creation and update timestamps to readable format
-            const createdAt = formatDate(question.createdAt);
-            const updatedAt = formatDate(question.updatedAt);
-            const gpsLocation = question.gpsLocation || "Not provided";
-
-            return (
-              <div
-                key={question._id}
-                className="p-6 bg-white shadow-md rounded-md hover:shadow-lg transition duration-300"
-              >
-                {question.images?.length > 0 && (
-                  <img
-                    src={imageSrc || 'https://via.placeholder.com/400x200'} // Fallback image in case of missing image
-                    alt={question.title}
-                    className="w-full h-48 object-cover rounded mb-4"
-                  />
-                )}
-                <h2 className="text-2xl font-semibold text-black mb-2">
-                  {question.title}
-                </h2>
-                <p className="text-gray-600 mb-4">{question.description}</p>
-                <p className="text-gray-500 text-xs">
-                  <strong>Status:</strong> {question.status}
-                </p>
-                <p className="text-gray-500 text-xs">
-                  <strong>Location:</strong> {gpsLocation}
-                </p>
-                <p className="text-gray-500 text-xs">
-                  <strong>Created At:</strong> {createdAt}
-                </p>
-                <p className="text-gray-500 text-xs">
-                  <strong>Last Updated:</strong> {updatedAt}
-                </p>
-                <p className="text-gray-500 text-xs">
-                  <strong>Answers Count:</strong> {question.answersCount || "0"}
-                </p>
-                <div className="text-right">
-                  <Link
-                    to={`/questions/${question._id}`}
-                    className="text-black font-semibold underline hover:text-gray-700"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <p className="text-gray-500 text-center text-lg">
-            No questions available. Be the first to ask one!
-          </p>
-        )}
+    <div className="container mx-auto px-4 py-4">
+      {/* Hero Section */}
+      <div className="bg-blue-500 text-white p-6 rounded-lg text-center mb-8">
+        <h1 className="text-4xl font-bold mb-2">Explore Questions</h1>
+        <p className="text-lg">Browse through the latest questions and share your knowledge.</p>
+        <Link
+          to="/submit-question"
+          className="mt-4 inline-block bg-white text-blue-500 px-6 py-2 rounded hover:bg-gray-200 transition"
+        >
+          Ask a Question
+        </Link>
       </div>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-1/4 pr-4">
+          <div className="bg-white p-4 shadow rounded-lg mb-6">
+            <h2 className="text-lg font-semibold mb-4">Categories</h2>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/category/general" className="text-blue-500 hover:underline">
+                  General
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/waste-management" className="text-blue-500 hover:underline">
+                  Waste Management
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/road-maintenance" className="text-blue-500 hover:underline">
+                  Road Maintenance
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/public-safety" className="text-blue-500 hover:underline">
+                  Public Safety
+                </Link>
+              </li>
+              {/* Add more categories */}
+            </ul>
+          </div>
+        </div>
+
+        {/* Question Feed */}
+        <div className="w-3/4">
+          <h2 className="text-2xl font-semibold mb-4">All Questions</h2>
+          {loading ? (
+            <p className="text-center text-gray-500">Loading questions...</p>
+          ) : questions.length > 0 ? (
+            <div className="space-y-4">
+              {questions.map((question) => (
+                <div
+                  key={question._id}
+                  className="bg-white p-4 shadow rounded-lg flex items-start"
+                >
+                  {/* Thumbnail */}
+                  <img
+                    src={getImageSrc(question.images)}
+                    alt="Thumbnail"
+                    className="w-16 h-16 rounded-full mr-4"
+                  />
+                  <div className="flex-grow">
+                    {/* Question Title */}
+                    <Link
+                      to={`/questions/${question._id}`}
+                      className="text-lg font-semibold text-blue-500 hover:underline"
+                    >
+                      {question.title}
+                    </Link>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {question.description.slice(0, 100)}...
+                    </p>
+                    <div className="text-xs text-gray-500 mt-2">
+                      <span>
+                        <strong>Category:</strong> {question.category || "General"}
+                      </span>{" "}
+                      |{" "}
+                      <span>
+                        <strong>Created:</strong> {formatDate(question.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-500 text-right ml-4">
+                    <p>
+                      <strong>Answers:</strong> {question.answersCount || 0}
+                    </p>
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      <span
+                        className={
+                          question.status === "resolved"
+                            ? "text-green-500"
+                            : question.status === "under review"
+                            ? "text-yellow-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {question.status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center mt-6">No questions available.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="mt-8 bg-gray-100 p-4 text-center text-gray-500">
+        <p>&copy; 2024 Q&A Hub. All rights reserved.</p>
+        <p>
+          <Link to="/about" className="text-blue-500 hover:underline">
+            About Us
+          </Link>{" "}
+          |{" "}
+          <Link to="/contact" className="text-blue-500 hover:underline">
+            Contact
+          </Link>{" "}
+          |{" "}
+          <Link to="/privacy" className="text-blue-500 hover:underline">
+            Privacy Policy
+          </Link>
+        </p>
+      </footer>
     </div>
   );
 };
