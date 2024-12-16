@@ -134,6 +134,7 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      
 
       <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'} bg-gray-800 text-white px-6 py-4`}>
         <form onSubmit={handleSearch} className="flex items-center mb-4">
