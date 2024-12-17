@@ -29,6 +29,8 @@ const AdminDashboard = () => {
             <Settings size={20} />
             <span>Settings</span>
           </TabsTrigger>
+         
+
         </TabsList>
 
         <TabsContent value="analytics">
@@ -46,6 +48,7 @@ const AdminDashboard = () => {
         <TabsContent value="settings">
           <SystemSettings />
         </TabsContent>
+
       </Tabs>
     </div>
   );

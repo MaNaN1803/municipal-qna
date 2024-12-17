@@ -12,20 +12,23 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('week');
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [timeRange]);
-
+ // Update the useEffect hook in Analytics.jsx
+useEffect(() => {
   const fetchAnalytics = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem('token');
       const response = await apiRequest(`/admin/analytics?range=${timeRange}`, 'GET', null, token);
       setStats(response);
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching analytics:', error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  fetchAnalytics();
+}, [timeRange]);
 
   return (
     <div className="space-y-6">

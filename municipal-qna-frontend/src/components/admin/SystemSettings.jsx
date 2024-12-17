@@ -27,31 +27,35 @@ const SystemSettings = () => {
     fetchSettings();
   }, []);
 
-  const fetchSettings = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await apiRequest('/admin/settings', 'GET', null, token);
-      setSettings(response);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching settings:', error);
-    }
-  };
 
-  const handleSave = async () => {
-    try {
-      setSaving(true);
-      const token = localStorage.getItem('token');
-      await apiRequest('/admin/settings', 'PUT', settings, token);
-      setMessage('Settings saved successfully');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (error) {
-      console.error('Error saving settings:', error);
-      setMessage('Error saving settings');
-    } finally {
-      setSaving(false);
+const fetchSettings = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await apiRequest('/admin/settings', 'GET', null, token);
+    if (response) {
+      setSettings(response);
     }
-  };
+    setLoading(false);
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    setMessage('Error loading settings');
+  }
+};
+
+const handleSave = async () => {
+  try {
+    setSaving(true);
+    const token = localStorage.getItem('token');
+    await apiRequest('/admin/settings', 'PUT', settings, token);
+    setMessage('Settings saved successfully');
+    setTimeout(() => setMessage(''), 3000);
+  } catch (error) {
+    console.error('Error saving settings:', error);
+    setMessage('Error saving settings');
+  } finally {
+    setSaving(false);
+  }
+};
 
   const handleChange = (section, key, value) => {
     if (section) {
